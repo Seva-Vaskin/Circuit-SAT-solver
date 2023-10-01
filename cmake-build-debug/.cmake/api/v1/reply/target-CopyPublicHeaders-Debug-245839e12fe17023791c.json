@@ -1,0 +1,35 @@
+{
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target"
+		],
+		"files" : 
+		[
+			"third_party/cryptominisat/src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 339,
+				"parent" : 0
+			}
+		]
+	},
+	"id" : "CopyPublicHeaders::@a05abeebcba748a8ef6e",
+	"name" : "CopyPublicHeaders",
+	"paths" : 
+	{
+		"build" : "third_party/cryptominisat/cmsat5-src",
+		"source" : "third_party/cryptominisat/src"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

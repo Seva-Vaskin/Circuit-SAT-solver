@@ -1,0 +1,91 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"third_party/cryptominisat/src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 356,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 422,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"third_party/cryptominisat/lib/libcryptominisat5.so.5.11"
+			],
+			"targetId" : "cryptominisat5::@a05abeebcba748a8ef6e",
+			"targetIndex" : 8,
+			"targetInstallNamelink" : "skip",
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"third_party/cryptominisat/lib/libcryptominisat5.so"
+			],
+			"targetId" : "cryptominisat5::@a05abeebcba748a8ef6e",
+			"targetIndex" : 8,
+			"targetInstallNamelink" : "only",
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "include/cryptominisat5",
+			"paths" : 
+			[
+				"third_party/cryptominisat/src/cryptominisat_c.h",
+				"third_party/cryptominisat/src/cryptominisat.h",
+				"third_party/cryptominisat/src/solvertypesmini.h",
+				"third_party/cryptominisat/src/dimacsparser.h",
+				"third_party/cryptominisat/src/streambuffer.h"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "bin",
+			"paths" : 
+			[
+				"third_party/cryptominisat/cryptominisat5_simple"
+			],
+			"targetId" : "cryptominisat5_simple-bin::@a05abeebcba748a8ef6e",
+			"targetIndex" : 9,
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "third_party/cryptominisat/cmsat5-src",
+		"source" : "third_party/cryptominisat/src"
+	}
+}

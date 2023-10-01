@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "third_party/cryptominisat/scripts/fuzz",
+		"source" : "third_party/cryptominisat/scripts/fuzz"
+	}
+}

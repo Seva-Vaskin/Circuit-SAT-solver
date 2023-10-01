@@ -1,0 +1,33 @@
+/home/vsevolod/.local/share/JetBrains/Toolbox/apps/clion/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/vsevolod/.local/share/JetBrains/Toolbox/apps/clion/bin/ninja/linux/x64/ninja -G Ninja -S /home/vsevolod/spbu/Circuit-SAT-solver -B /home/vsevolod/spbu/Circuit-SAT-solver/cmake-build-debug
+-- LIB directory is 'lib'
+-- BIN directory is 'bin'
+-- Doing a Debug build
+-- tbuddy not found, not compiling with tbuddy-based GJ FRAT proofs
+-- build type is Debug
+-- Compiling for dynamic library use
+-- GIT hash found: f8190ceed309613e22424fe4ce12e4ba93adcba9
+-- PROJECT_VERSION: 5.11.14
+-- PROJECT_VERSION_MAJOR: 5
+-- PROJECT_VERSION_MINOR: 11
+-- PROJECT_VERSION_PATCH: 14
+-- Could NOT find Boost (missing: Boost_INCLUDE_DIR program_options) (Required is at least version "1.46.0")
+-- Not compiling detailed statistics. The system is faster without them
+-- Cannot find help2man, not creating manpage
+-- OK, Found ZLIB!
+-- Found FPU code for yalsat: fpu_control.h, _FPU_SINGLE, _FPU_DOUBLE
+-- Python 3 -- Python3_EXECUTABLE=/usr/bin/python3.11
+-- Python 3 -- Python3_LIBRARIES=/usr/lib/libpython3.11.so
+-- Python 3 -- Python3_INCLUDE_DIRS=/usr/include/python3.11
+-- Python 3 -- Python3_VERSION=3.11.5
+-- Python 3 -- Python3_NumPy_INCLUDE_DIRS=/usr/lib/python3.11/site-packages/numpy/core/include
+-- Python 3 -- Python3_NumPy_VERSION=1.25.2
+-- Only building executable with few command-line options because the boost program_options library were not available
+-- All defines at startup: 
+-- Performing Test HAVE_FLAG_-Wformat=2
+-- Performing Test HAVE_FLAG_-Wformat=2 - Success
+-- Valgrind found: MEMORYCHECK_COMMAND-NOTFOUND. Running test using it.
+-- Testing is enabled
+-- NOTE: if adding the 'gtest' subdirectory fails, you need to issue 'git submodule init' and 'git submodule update'
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/vsevolod/spbu/Circuit-SAT-solver/cmake-build-debug
