@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 set(CMAKE_CXX_STANDARD 20)
 
-project(CircuitSATSolver LANGUAGES C CXX)
+project(CircuitSATSolver LANGUAGES CXX)
 set(This CircuitSATSolver)
 
 
@@ -16,3 +16,9 @@ file(GLOB_RECURSE ${This}-sources
 add_executable(${This} ${${This}-sources})
 
 target_link_libraries(${This} cryptominisat5)
+
+target_include_directories(${This}
+        PUBLIC src
+        PUBLIC src/bench_parsing
+        PUBLIC src/circuit
+)
