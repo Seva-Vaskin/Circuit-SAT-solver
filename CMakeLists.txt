@@ -4,7 +4,8 @@ set(CMAKE_CXX_STANDARD 20)
 project(CircuitSATSolver LANGUAGES C CXX)
 set(This CircuitSATSolver)
 
-set(ENABLE_TESTING ON)
+
+set(ENABLE_TESTING ON CACHE BOOL "Testing for cryptominisat")
 
 add_subdirectory(third_party/cryptominisat)
 
