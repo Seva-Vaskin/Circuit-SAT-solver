@@ -30,8 +30,8 @@ namespace {
         });
     }
 
-    bool checkFunctionName(const string &name, const set<string> &validNames) {
-        return validNames.contains(name);
+    bool checkFunctionName(const string &name, const vector<string> &validNames) {
+        return find(validNames.begin(), validNames.end(), name) != validNames.end();
     }
 
     struct BenchFunction {
@@ -44,7 +44,7 @@ namespace {
         BenchFunction function;
     };
 
-    unique_ptr<BenchFunction> tryParseBenchFunction(const string &s, const set<string> &validFunctionNames) {
+    unique_ptr<BenchFunction> tryParseBenchFunction(const string &s, const vector<string> &validFunctionNames) {
         size_t openBracketPos = s.find('(');
         size_t closeBracketPos = s.find(')');
         if (openBracketPos == string::npos || closeBracketPos != s.size() - 1)
@@ -73,8 +73,13 @@ namespace {
         string variableName = s.substr(0, equalSignPos);
         if (!checkVariableName(variableName))
             return nullptr;
-        static const auto allFunctionNames = Circuit::
-        auto function = tryParseBenchFunction(s.substr(equalSignPos + 1), allFunctionNames);
+        static const auto allFunctionsByName = Circuit::Functions::allFunctionsByName;
+        vector<string> functionNames;
+        transform(allFunctionsByName.begin(), allFunctionsByName.end(), back_inserter(functionNames),
+                  [](const auto &pair) {
+                      return pair.first;
+                  });
+        auto function = tryParseBenchFunction(s.substr(equalSignPos + 1), functionNames);
         if (function == nullptr)
             return nullptr;
         return make_unique<BenchEquation>(variableName, *function);
@@ -105,7 +110,7 @@ namespace {
         auto benchEquation = tryParseBenchEquation(line);
         if (benchEquation == nullptr)
             return false;
-        static const auto functionsByName = CircuitFunction::allFunctionsByName();
+        static const auto functionsByName = Circuit::Functions::allFunctionsByName;
         auto function = functionsByName.find(benchEquation->function.name);
         if (function == functionsByName.end())
             throw runtime_error("Cannot parse line (invalid circuit function): " + line);
