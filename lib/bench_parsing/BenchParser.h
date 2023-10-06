@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
-#include "circuit/Circuit.h"
+#include "Circuit.h"
 
 class BenchParser {
 public:

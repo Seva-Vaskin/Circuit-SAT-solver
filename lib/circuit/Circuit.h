@@ -13,6 +13,24 @@
 
 class Circuit {
 public:
+    class Function {
+    public:
+        Function() = default;
+
+        explicit Function(uint32_t answerMask);
+
+        bool operator()(uint32_t argumentsMask) const;
+
+        [[nodiscard]] bool isNone() const;
+
+    private:
+        uint32_t _answerMask = -1;
+    };
+
+    struct Functions {
+        inline static const Function AND = Function()
+    };
+
     Circuit(const Circuit &) = default;
 
     Circuit() = default;
@@ -23,6 +41,7 @@ public:
 
     void addInternal(const std::string &internalName, const std::vector<std::string> &arguments,
                      std::function<bool(bool, bool)> function);
+
 private:
 
     std::set<CircuitNode> _literal;

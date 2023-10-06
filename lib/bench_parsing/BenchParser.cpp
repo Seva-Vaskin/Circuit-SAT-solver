@@ -3,8 +3,6 @@
 #include <string>
 #include <algorithm>
 
-#include "circuit/CircuitFunction.h"
-
 using namespace std;
 
 namespace {
@@ -75,7 +73,7 @@ namespace {
         string variableName = s.substr(0, equalSignPos);
         if (!checkVariableName(variableName))
             return nullptr;
-        static const auto allFunctionNames = CircuitFunction::allFunctionNames();
+        static const auto allFunctionNames = Circuit::
         auto function = tryParseBenchFunction(s.substr(equalSignPos + 1), allFunctionNames);
         if (function == nullptr)
             return nullptr;

@@ -30,3 +30,13 @@ void Circuit::addInternal(const std::string &internalName, const std::vector<std
                           std::function<bool(bool, bool)> function) {
     // TODO
 }
+
+Circuit::Function::Function(uint32_t answerMask) : _answerMask(answerMask) {}
+
+bool Circuit::Function::operator()(uint32_t argumentsMask) const {
+    return _answerMask & (1 << argumentsMask);
+}
+
+bool Circuit::Function::isNone() const {
+    return _answerMask == (uint32_t) -1;
+}
