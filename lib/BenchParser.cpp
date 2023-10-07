@@ -99,9 +99,12 @@ namespace {
         }
         if (benchFunction->name == inputFunctionName)
             circuit.addInput(nodeName);
-        else if (benchFunction->name == outputFunctionName)
+        else if (benchFunction->name == outputFunctionName) {
             circuit.addOutput(nodeName);
-        else
+            if (circuit.outputsCount() > 1) {
+                throw runtime_error("Circuits with multiple outputs are not supported");
+            }
+        } else
             throw logic_error("This code line shouldn't be reached");
         return true;
     }

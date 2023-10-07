@@ -19,8 +19,7 @@ target_link_libraries(${This}-lib cryptominisat5)
 
 target_include_directories(${This}-lib
         PUBLIC lib
-        PUBLIC lib/bench_parsing
-        PUBLIC lib/circuit
+        PUBLIC lib/solver
 )
 
 # Executable

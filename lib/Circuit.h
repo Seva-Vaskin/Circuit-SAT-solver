@@ -11,6 +11,12 @@
 
 class Circuit {
 public:
+    enum class Value {
+        False = false,
+        True = true,
+        Unknown = 2
+    };
+
     class Function {
     public:
         Function() = default;
@@ -19,13 +25,29 @@ public:
 
         bool operator()(uint32_t argumentsMask) const;
 
-        bool operator()(const std::vector<bool>& arguments) const;
+        bool operator()(const std::vector<bool> &arguments) const;
+
+        bool operator()(Value a, Value b) const;
+
+        bool operator()(Value a) const;
+
+        bool operator()(bool a, bool b) const;
+
+        bool operator()(bool a) const;
 
         [[nodiscard]] bool isNone() const;
 
-        static uint32_t composeMask(const std::vector<bool>& arguments);
-
     private:
+        static uint32_t composeMask(const std::vector<bool> &arguments);
+
+        static uint32_t composeMask(Value a, Value b);
+
+        static uint32_t composeMask(Value a);
+
+        static uint32_t composeMask(bool a, bool b);
+
+        static uint32_t composeMask(bool a);
+
         uint32_t _answerMask = -1;
     };
 
@@ -50,20 +72,14 @@ public:
     };
 
     struct Node {
-        enum class Value {
-            False,
-            True,
-            Unknown
-        };
-
         Node(std::string name, int id);
 
         std::string name;
         int id;
         Function function = Function();
+        Value value = Value::Unknown;
         int input1 = -1;
         int input2 = -1;
-        Value value = Value::Unknown;
         bool isInput = false;
         bool isOutput = false;
     };
@@ -78,11 +94,40 @@ public:
 
     void addInternal(const std::string &internalName, const std::vector<std::string> &arguments, Function function);
 
+    Node &operator[](size_t i);
+
+    const Node &operator[](size_t i) const;
+
+    Node &operator[](const std::string &nodeName);
+
+    const Node &operator[](const std::string &nodeName) const;
+
+    Node &input(size_t i);
+
+    const Node &input(size_t i) const;
+
+    Node &output(size_t i);
+
+    const Node &output(size_t i) const;
+
+    Node& parent(size_t i, size_t parentIndex);
+
+    const Node& parent(size_t i, size_t parentIndex) const;
+
+    size_t inputsCount() const;
+
+    size_t outputsCount() const;
+
+    size_t nodesCount() const;
+
+    size_t parentsCount(size_t i) const;
+
 private:
     Node &addNode(const std::string &nodeName);
 
     std::vector<Node> _nodes;
     std::vector<size_t> _inputs;
     std::vector<size_t> _outputs;
+    std::vector<std::vector<size_t>> _parentNodes;
     std::unordered_map<std::string, size_t> _nodesByName;
 };

@@ -43,8 +43,10 @@ Circuit::addInternal(const std::string &internalName, const std::vector<std::str
     assert(node.function.isNone() && node.input1 == -1 && node.input2 == -1);
     node.function = function;
     node.input1 = addNode(arguments[0]).id;
+    _parentNodes[node.input1].emplace_back(node.id);
     if (arguments.size() == 2) {
         node.input2 = addNode(arguments[1]).id;
+        _parentNodes[node.input2].emplace_back(node.id);
     }
 }
 
@@ -53,8 +55,65 @@ Circuit::Node &Circuit::addNode(const string &nodeName) {
     if (nodeIdIterator != _nodesByName.end())
         return _nodes[nodeIdIterator->second];
     Node &node = _nodes.emplace_back(nodeName, _nodes.size());
+    _parentNodes.emplace_back();
     _nodesByName.emplace(nodeName, node.id);
     return node;
+}
+
+Circuit::Node &Circuit::operator[](size_t i) {
+    return _nodes[i];
+}
+
+const Circuit::Node &Circuit::operator[](size_t i) const {
+    return _nodes[i];
+}
+
+Circuit::Node &Circuit::input(size_t i) {
+    return _nodes[_inputs[i]];
+}
+
+const Circuit::Node &Circuit::input(size_t i) const {
+    return _nodes[_inputs[i]];
+}
+
+Circuit::Node &Circuit::output(size_t i) {
+    return _nodes[_outputs[i]];
+}
+
+const Circuit::Node &Circuit::output(size_t i) const {
+    return _nodes[_outputs[i]];
+}
+
+Circuit::Node &Circuit::operator[](const string &nodeName) {
+    return _nodes[_nodesByName.at(nodeName)];
+}
+
+const Circuit::Node &Circuit::operator[](const string &nodeName) const {
+    return _nodes[_nodesByName.at(nodeName)];
+}
+
+size_t Circuit::inputsCount() const {
+    return _inputs.size();
+}
+
+size_t Circuit::outputsCount() const {
+    return _outputs.size();
+}
+
+size_t Circuit::nodesCount() const {
+    return _nodes.size();
+}
+
+size_t Circuit::parentsCount(size_t i) const {
+    return _parentNodes[i].size();
+}
+
+Circuit::Node &Circuit::parent(size_t i, size_t parentIndex) {
+    return _nodes[_parentNodes[i][parentIndex]];
+}
+
+const Circuit::Node &Circuit::parent(size_t i, size_t parentIndex) const {
+    return _nodes[_parentNodes[i][parentIndex]];
 }
 
 Circuit::Function::Function(uint32_t answerMask) : _answerMask(answerMask) {}
@@ -79,6 +138,40 @@ uint32_t Circuit::Function::composeMask(const vector<bool> &arguments) {
 
 bool Circuit::Function::operator()(const vector<bool> &arguments) const {
     return (*this)(composeMask(arguments));
+}
+
+uint32_t Circuit::Function::composeMask(Circuit::Value a, Circuit::Value b) {
+    assert(a != Circuit::Value::Unknown && b != Circuit::Value::Unknown);
+    return composeMask((bool) a, (bool) b);
+}
+
+bool Circuit::Function::operator()(Circuit::Value a, Circuit::Value b) const {
+    return (*this)(composeMask(a, b));
+}
+
+uint32_t Circuit::Function::composeMask(Circuit::Value a) {
+    assert(a != Circuit::Value::Unknown);
+    return composeMask((bool) a);
+}
+
+uint32_t Circuit::Function::composeMask(bool a, bool b) {
+    return a | (1 << b);
+}
+
+uint32_t Circuit::Function::composeMask(bool a) {
+    return a;
+}
+
+bool Circuit::Function::operator()(Circuit::Value a) const {
+    return (*this)(composeMask(a));
+}
+
+bool Circuit::Function::operator()(bool a, bool b) const {
+    return (*this)(composeMask(a, b));
+}
+
+bool Circuit::Function::operator()(bool a) const {
+    return (*this)(composeMask(a));
 }
 
 Circuit::Node::Node(std::string name, int id) : name(std::move(name)), id(id) {}
