@@ -116,6 +116,12 @@ const Circuit::Node &Circuit::parent(size_t i, size_t parentIndex) const {
     return _nodes[_parentNodes[i][parentIndex]];
 }
 
+void Circuit::clearValues() {
+    for (auto &node: _nodes) {
+        node.value = Value::Unknown;
+    }
+}
+
 Circuit::Function::Function(uint32_t answerMask) : _answerMask(answerMask) {}
 
 bool Circuit::Function::operator()(uint32_t argumentsMask) const {
@@ -145,8 +151,9 @@ uint32_t Circuit::Function::composeMask(Circuit::Value a, Circuit::Value b) {
     return composeMask((bool) a, (bool) b);
 }
 
-bool Circuit::Function::operator()(Circuit::Value a, Circuit::Value b) const {
-    return (*this)(composeMask(a, b));
+Circuit::Value Circuit::Function::operator()(Circuit::Value a, Circuit::Value b) const {
+    return a == Circuit::Value::Unknown || b == Circuit::Value::Unknown ? Circuit::Value::Unknown
+                                                                        : Circuit::Value((*this)(composeMask(a, b)));
 }
 
 uint32_t Circuit::Function::composeMask(Circuit::Value a) {
@@ -155,15 +162,15 @@ uint32_t Circuit::Function::composeMask(Circuit::Value a) {
 }
 
 uint32_t Circuit::Function::composeMask(bool a, bool b) {
-    return a | (1 << b);
+    return a | (b << 1);
 }
 
 uint32_t Circuit::Function::composeMask(bool a) {
     return a;
 }
 
-bool Circuit::Function::operator()(Circuit::Value a) const {
-    return (*this)(composeMask(a));
+Circuit::Value Circuit::Function::operator()(Circuit::Value a) const {
+    return a == Circuit::Value::Unknown ? Circuit::Value::Unknown : Circuit::Value((*this)(composeMask(a)));
 }
 
 bool Circuit::Function::operator()(bool a, bool b) const {

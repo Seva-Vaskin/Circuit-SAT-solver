@@ -12,9 +12,9 @@
 class Circuit {
 public:
     enum class Value {
-        False = false,
-        True = true,
-        Unknown = 2
+        False,
+        True,
+        Unknown
     };
 
     class Function {
@@ -27,9 +27,9 @@ public:
 
         bool operator()(const std::vector<bool> &arguments) const;
 
-        bool operator()(Value a, Value b) const;
+        Value operator()(Value a, Value b) const;
 
-        bool operator()(Value a) const;
+        Value operator()(Value a) const;
 
         bool operator()(bool a, bool b) const;
 
@@ -54,7 +54,7 @@ public:
     struct Functions {
         inline static const Function AND = Function(0b1000);
         inline static const Function OR = Function(0b1110);
-        inline static const Function NOT = Function(0b10);
+        inline static const Function NOT = Function(0b01);
         inline static const Function NAND = Function(0b0111);
         inline static const Function NOR = Function(0b0001);
         inline static const Function XOR = Function(0b0110);
@@ -121,6 +121,8 @@ public:
     size_t nodesCount() const;
 
     size_t parentsCount(size_t i) const;
+
+    void clearValues();
 
 private:
     Node &addNode(const std::string &nodeName);

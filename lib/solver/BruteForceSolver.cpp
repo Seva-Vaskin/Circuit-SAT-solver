@@ -6,7 +6,15 @@ using namespace std;
 
 namespace {
     void updateNodeValue(Circuit &circuit, Circuit::Node &node, uint32_t mask) {
-        Circuit::Value newValue = Circuit::Value(mask & (1 << node.id));
+        Circuit::Value newValue;
+        if (node.isInput)
+            newValue = Circuit::Value(bool(mask & (1 << node.id)));
+        else if (node.input2 == -1) {
+            newValue = node.function(circuit[node.input1].value);
+        } else {
+            assert(node.input1 != -1 && node.input1 != -1);
+            newValue = node.function(circuit[node.input1].value, circuit[node.input2].value);
+        }
         if (node.value == newValue)
             return;
         node.value = newValue;
@@ -17,7 +25,7 @@ namespace {
     }
 }
 
-CircuitSATSolver::Result BruteForceSolver::solve(Circuit circuit) {
+CircuitSATSolver::Result BruteForceSolver::solve(Circuit &circuit) {
     size_t inputsCount = circuit.inputsCount();
     if (inputsCount > 30) {
         // Do not try to brute force big circuits
