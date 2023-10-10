@@ -9,10 +9,10 @@ namespace {
         Circuit::Value newValue;
         if (node.isInput)
             newValue = Circuit::Value(bool(mask & (1 << node.id)));
-        else if (node.input2 == -1) {
+        else if (node.input2 == (size_t)-1) {
             newValue = node.function(circuit[node.input1].value);
         } else {
-            assert(node.input1 != -1 && node.input1 != -1);
+            assert(node.input1 != (size_t)-1 && node.input1 != (size_t)-1);
             newValue = node.function(circuit[node.input1].value, circuit[node.input2].value);
         }
         if (node.value == newValue)

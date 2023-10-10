@@ -4,6 +4,12 @@ set(CMAKE_CXX_STANDARD 20)
 project(CircuitSATSolver LANGUAGES CXX)
 set(This CircuitSATSolver)
 
+# Debug flags
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "-m64 -Wfloat-equal -Wlogical-op -Wall -Wextra -Wno-unused-result -D_GLIBCXX_DEBUG -fsanitize=undefined -fstack-protector-strong -fno-sanitize-recover=all")
+
+
 # Library
 set(ENABLE_TESTING ON CACHE BOOL "Testing for cryptominisat")
 
@@ -20,7 +26,7 @@ target_link_libraries(${This}-lib cryptominisat5)
 target_include_directories(${This}-lib
         PUBLIC lib
         PUBLIC lib/solver
-)
+        )
 
 # Executable
 add_executable(${This} main.cpp ${${This}-sources})

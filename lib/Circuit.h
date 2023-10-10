@@ -74,14 +74,14 @@ public:
     };
 
     struct Node {
-        Node(std::string name, int id);
+        Node(std::string name, size_t id);
 
         std::string name;
-        int id;
+        size_t id;
         Function function = Function();
         Value value = Value::Unknown;
-        int input1 = -1;
-        int input2 = -1;
+        size_t input1 = -1;
+        size_t input2 = -1;
         bool isInput = false;
         bool isOutput = false;
     };
@@ -112,9 +112,9 @@ public:
 
     const Node &output(size_t i) const;
 
-    Node& parent(size_t i, size_t parentIndex);
+    Node &parent(size_t i, size_t parentIndex);
 
-    const Node& parent(size_t i, size_t parentIndex) const;
+    const Node &parent(size_t i, size_t parentIndex) const;
 
     size_t inputsCount() const;
 
@@ -127,7 +127,7 @@ public:
     void clearValues();
 
 private:
-    Node &addNode(const std::string &nodeName);
+    size_t addNode(const std::string &nodeName);
 
     std::vector<Node> _nodes;
     std::vector<size_t> _inputs;

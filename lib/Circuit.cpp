@@ -6,21 +6,8 @@
 
 using namespace std;
 
-namespace {
-    void deleteSpaces(string &s) {
-        while (true) {
-            auto it = find_if(s.begin(), s.end(), [](char c) {
-                return isspace(c);
-            });
-            if (it == s.end())
-                break;
-            s.erase(it);
-        }
-    }
-}
-
 void Circuit::addInput(const std::string &inputName) {
-    auto &node = addNode(inputName);
+    auto &node = _nodes[addNode(inputName)];
     if (!node.isInput) {
         node.isInput = true;
         _inputs.emplace_back(node.id);
@@ -28,7 +15,7 @@ void Circuit::addInput(const std::string &inputName) {
 }
 
 void Circuit::addOutput(const std::string &outputName) {
-    auto &node = addNode(outputName);
+    auto &node = _nodes[addNode(outputName)];
     if (!node.isOutput) {
         node.isOutput = true;
         _outputs.emplace_back(node.id);
@@ -37,27 +24,30 @@ void Circuit::addOutput(const std::string &outputName) {
 
 void
 Circuit::addInternal(const std::string &internalName, const std::vector<std::string> &arguments, Function function) {
-    auto &node = addNode(internalName);
+    size_t currNode = addNode(internalName);
     assert(!arguments.empty() && arguments.size() <= 2);
-    assert(!node.isInput);
-    assert(node.function.isNone() && node.input1 == -1 && node.input2 == -1);
-    node.function = function;
-    node.input1 = addNode(arguments[0]).id;
-    _parentNodes[node.input1].emplace_back(node.id);
+    assert(!_nodes[currNode].isInput);
+    assert(_nodes[currNode].function.isNone()
+           && _nodes[currNode].input1 == (size_t) -1 &&
+           _nodes[currNode].input2 == (size_t) -1);
+    _nodes[currNode].function = function;
+    _nodes[currNode].input1 = addNode(arguments[0]);
+    _parentNodes[_nodes[currNode].input1].emplace_back(_nodes[currNode].id);
     if (arguments.size() == 2) {
-        node.input2 = addNode(arguments[1]).id;
-        _parentNodes[node.input2].emplace_back(node.id);
+        _nodes[currNode].input2 = addNode(arguments[1]);
+        _parentNodes[_nodes[currNode].input2].emplace_back(currNode);
     }
 }
 
-Circuit::Node &Circuit::addNode(const string &nodeName) {
+size_t Circuit::addNode(const string &nodeName) {
     auto nodeIdIterator = _nodesByName.find(nodeName);
     if (nodeIdIterator != _nodesByName.end())
-        return _nodes[nodeIdIterator->second];
-    Node &node = _nodes.emplace_back(nodeName, _nodes.size());
+        return nodeIdIterator->second;
+    _nodes.emplace_back(nodeName, _nodes.size());
+    Node &node = _nodes.back();
     _parentNodes.emplace_back();
     _nodesByName.emplace(nodeName, node.id);
-    return node;
+    return node.id;
 }
 
 Circuit::Node &Circuit::operator[](size_t i) {
@@ -181,4 +171,4 @@ bool Circuit::Function::operator()(bool a) const {
     return (*this)(composeMask(a));
 }
 
-Circuit::Node::Node(std::string name, int id) : name(std::move(name)), id(id) {}
+Circuit::Node::Node(std::string name, size_t id) : name(std::move(name)), id(id) {}

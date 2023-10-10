@@ -129,7 +129,7 @@ Circuit BenchParser::parseFile(const filesystem::path &filePath) {
     string line;
     while (getline(in, line)) {
         deleteSpaces(line);
-        if (line.empty())
+        if (line.empty() || line.front() == '#')
             continue;
         bool parsed = false;
         parsed = parsed | tryParseFunctionAndAddToCircuit(line, circuit);

@@ -7,7 +7,7 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-cd "$(dirname "$0")" || return 1
+cd "$(dirname "$0")"
 
 solver_name="$1"
 time_limit="$2"
