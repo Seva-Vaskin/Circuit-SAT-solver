@@ -59,6 +59,7 @@ public:
         inline static const Function NOR = Function(0b0001);
         inline static const Function XOR = Function(0b0110);
         inline static const Function NXOR = Function(0b1001);
+        inline static const Function BUFF = Function(0b10);
 
         inline static const std::unordered_map<std::string, Function> allFunctionsByName = {
                 {"AND",  AND},
@@ -67,7 +68,8 @@ public:
                 {"NAND", NAND},
                 {"NOR",  NOR},
                 {"XOR",  XOR},
-                {"NXOR", NXOR}
+                {"NXOR", NXOR},
+                {"BUFF", BUFF}
         };
     };
 
