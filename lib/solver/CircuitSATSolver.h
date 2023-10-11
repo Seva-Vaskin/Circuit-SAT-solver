@@ -10,7 +10,7 @@ public:
         Unknown
     };
 
-    virtual Result solve(Circuit &circuit) = 0;
+    virtual Result solve(Circuit &circuit) const = 0;
 
     virtual ~CircuitSATSolver() = default;
 };

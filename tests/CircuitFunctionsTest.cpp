@@ -34,5 +34,8 @@ TEST_CASE("CircuitFunctionsTest", "[CircuitFunctionsTest]") {
 
         REQUIRE(Circuit::Functions::NXOR(a, b) == !(a ^ b));
         REQUIRE(Circuit::Functions::NXOR(aValue, bValue) == toVal(!(a ^ b)));
+
+        REQUIRE(Circuit::Functions::BUFF(a) == a);
+        REQUIRE(Circuit::Functions::BUFF(aValue) == toVal(a));
     }
 }

@@ -4,5 +4,5 @@
 
 class BruteForceSolver : public CircuitSATSolver {
 public:
-    Result solve(Circuit &circuit) override;
+    Result solve(Circuit &circuit) const override;
 };

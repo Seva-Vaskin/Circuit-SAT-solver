@@ -6,11 +6,13 @@
 
 #include "BenchParser.h"
 #include "BruteForceSolver.h"
+#include "CNFReductionSolver.h"
 
 using namespace std;
 
 static const map<string, shared_ptr<CircuitSATSolver>> stringToSolver = {
-        {"BruteForceSolver", std::make_shared<BruteForceSolver>()}
+        {"BruteForceSolver", make_shared<BruteForceSolver>()},
+        {"CNFReductionSolver", make_shared<CNFReductionSolver>()}
 };
 
 int main(int argc, char *argv[]) {
