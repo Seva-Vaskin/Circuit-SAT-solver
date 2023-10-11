@@ -28,10 +28,10 @@ echo " * Solver name: $solver_name" | tee -a "$results"
 echo " * Time limit: $time_limit" | tee -a "$results"
 echo "Environment:" | tee -a "$results"
 echo " * Commit: $(git rev-parse HEAD)" | tee -a "$results"
-echo " * CPU:    $(lscpu | grep 'Model name' | awk '{for (i=3; i<=NF; i++) printf "%s ", $i; print ""}')" | tee -a "$results"
-echo " * RAM:    $(free -h | grep "Mem" | awk '{print $2}')" | tee -a "$results"
+echo " *    CPU: $(lscpu | grep 'Model name' | awk '{for (i=3; i<=NF; i++) printf "%s ", $i; print ""}')" | tee -a "$results"
+echo " *    RAM: $(free -h | grep "Mem" | awk '{print $2}')" | tee -a "$results"
 echo "===========================================" >>"$results"
 for file in "$tests"/*.bench; do
-    echo "Testing $(basename $file)"
+    echo "Testing $(basename "$file")"
     "./$build_dir/$app_name" "$solver_name" "$file" "$time_limit" | tee -a "$results"
 done
