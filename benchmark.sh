@@ -11,7 +11,7 @@ cd "$(dirname "$0")"
 
 solver_name="$1"
 time_limit="$2"
-results="./data/benchmarks/$solver_name-$(date +'%m%d%Y-%H%M%S')"
+results="./data/benchmarks/$solver_name-$(date +'%m%d%Y-%H%M%S').txt"
 tests="./data/benchs_for_test"
 build_dir="cmake-build-release"
 app_name="CircuitSATSolver"
