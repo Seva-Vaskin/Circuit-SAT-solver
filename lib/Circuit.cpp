@@ -112,7 +112,7 @@ void Circuit::clearValues() {
     }
 }
 
-Circuit::Function::Function(uint32_t answerMask) : _answerMask(answerMask) {}
+Circuit::Function::Function(uint32_t answerMask, uint64_t argumentsCount) : _answerMask(answerMask), _argumentsCount(argumentsCount) {}
 
 bool Circuit::Function::operator()(uint32_t argumentsMask) const {
     return _answerMask & (1 << argumentsMask);
@@ -169,6 +169,10 @@ bool Circuit::Function::operator()(bool a, bool b) const {
 
 bool Circuit::Function::operator()(bool a) const {
     return (*this)(composeMask(a));
+}
+
+size_t Circuit::Function::argumentsCount() const {
+    return _argumentsCount;
 }
 
 Circuit::Node::Node(std::string name, size_t id) : name(std::move(name)), id(id) {}

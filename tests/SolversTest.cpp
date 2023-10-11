@@ -1,8 +1,38 @@
 #include "catch2/catch_test_macros.hpp"
 
+#include <random>
+
 #include "BruteForceSolver.h"
 #include "CNFReductionSolver.h"
 #include "Circuit.h"
+
+using namespace std;
+
+namespace {
+    Circuit generateCircuit(mt19937 &rnd, size_t maxInputs, size_t maxInternals) {
+        vector<Circuit::Function> functions;
+        for (auto &[_, function]: Circuit::Functions::allFunctionsByName)
+            functions.push_back(function);
+        Circuit circuit;
+        size_t inputsCount = rnd() % maxInputs + 1;
+        for (size_t j = 0; j < inputsCount; j++) {
+            circuit.addInput(to_string(j));
+        }
+        size_t internalCounts = rnd() % maxInternals + 1;
+        for (size_t j = inputsCount; j < internalCounts + inputsCount; j++) {
+            auto function = functions[rnd() % functions.size()];
+            vector<string> arguments;
+            for (size_t k = 0; k < function.argumentsCount(); k++) {
+                auto arg = rnd() % j;
+                arguments.emplace_back(to_string(arg));
+            }
+            circuit.addInternal(to_string(j), arguments, function);
+        }
+        size_t output = rnd() % internalCounts + inputsCount;
+        circuit.addOutput(to_string(output));
+        return circuit;
+    }
+}
 
 class SolversTester {
 public:
@@ -77,4 +107,30 @@ TEST_CASE("CNFReductionSolverTest-SimpleSAT", "[SimpleSAT]") {
 
 TEST_CASE("CNFReductionSolverTest-SimpleUnSAT", "[SimpleUnSAT]") {
     SolversTester::testCircuit_SimpleUnSAT(CNFReductionSolver());
+}
+
+TEST_CASE("StressTestAllSolvers", "[stress]") {
+    const static vector<shared_ptr<CircuitSATSolver>> solvers = {make_shared<BruteForceSolver>(),
+                                                                 make_shared<CNFReductionSolver>()};
+    bool wasUnSAT = false, wasSAT = false;
+    mt19937 rnd(0);
+
+    for (int i = 0; i < 500; i++) {
+        Circuit circuit = generateCircuit(rnd, 10, 100);
+        CircuitSATSolver::Result result = CircuitSATSolver::Result::Unknown;
+        for (auto &solver: solvers) {
+            Circuit circuitCopy = circuit;
+            auto currentResult = solver->solve(circuitCopy);
+            REQUIRE(currentResult != CircuitSATSolver::Result::Unknown);
+            if (result == CircuitSATSolver::Result::Unknown)
+                result = currentResult;
+            else
+                REQUIRE(currentResult == result);
+        }
+        wasSAT |= result == CircuitSATSolver::Result::SAT;
+        wasUnSAT |= result == CircuitSATSolver::Result::UnSAT;
+    }
+
+    REQUIRE(wasUnSAT);
+    REQUIRE(wasSAT);
 }

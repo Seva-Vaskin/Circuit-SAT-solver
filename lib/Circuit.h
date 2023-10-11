@@ -21,7 +21,7 @@ public:
     public:
         Function() = default;
 
-        explicit Function(uint32_t answerMask);
+        Function(uint32_t answerMask, uint64_t argumentsCount);
 
         bool operator()(uint32_t argumentsMask) const;
 
@@ -37,6 +37,8 @@ public:
 
         [[nodiscard]] bool isNone() const;
 
+        [[nodiscard]] size_t argumentsCount() const;
+
     private:
         static uint32_t composeMask(const std::vector<bool> &arguments);
 
@@ -49,17 +51,18 @@ public:
         static uint32_t composeMask(bool a);
 
         uint32_t _answerMask = -1;
+        uint64_t _argumentsCount = -1;
     };
 
     struct Functions {
-        inline static const Function AND = Function(0b1000);
-        inline static const Function OR = Function(0b1110);
-        inline static const Function NOT = Function(0b01);
-        inline static const Function NAND = Function(0b0111);
-        inline static const Function NOR = Function(0b0001);
-        inline static const Function XOR = Function(0b0110);
-        inline static const Function NXOR = Function(0b1001);
-        inline static const Function BUFF = Function(0b10);
+        inline static const Function AND = Function(0b1000, 2);
+        inline static const Function OR = Function(0b1110, 2);
+        inline static const Function NOT = Function(0b01, 1);
+        inline static const Function NAND = Function(0b0111, 2);
+        inline static const Function NOR = Function(0b0001, 2);
+        inline static const Function XOR = Function(0b0110, 2);
+        inline static const Function NXOR = Function(0b1001, 2);
+        inline static const Function BUFF = Function(0b10, 1);
 
         inline static const std::unordered_map<std::string, Function> allFunctionsByName = {
                 {"AND",  AND},

@@ -25,7 +25,7 @@ namespace {
     }
 
     uint32_t ctz(uint32_t n) {
-        return n == 0 ? sizeof(uint32_t) : __builtin_ctz(n);
+        return n == 0 ? sizeof(uint32_t) * 8 : __builtin_ctz(n);
     }
 }
 

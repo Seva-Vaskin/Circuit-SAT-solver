@@ -11,12 +11,11 @@
 using namespace std;
 
 static const map<string, shared_ptr<CircuitSATSolver>> stringToSolver = {
-        {"BruteForceSolver", make_shared<BruteForceSolver>()},
+        {"BruteForceSolver",   make_shared<BruteForceSolver>()},
         {"CNFReductionSolver", make_shared<CNFReductionSolver>()}
 };
 
 int main(int argc, char *argv[]) {
-
     if (argc != 4) {
         cerr << "Usage: CircuitSATSolver solverName testFile timeLimit" << endl;
         cerr << endl;
