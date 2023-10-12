@@ -142,6 +142,7 @@ uint32_t Circuit::Function::composeMask(Circuit::Value a, Circuit::Value b) {
 }
 
 Circuit::Value Circuit::Function::operator()(Circuit::Value a, Circuit::Value b) const {
+    assert(_argumentsCount == 2);
     return a == Circuit::Value::Unknown || b == Circuit::Value::Unknown ? Circuit::Value::Unknown
                                                                         : Circuit::Value((*this)(composeMask(a, b)));
 }
@@ -160,14 +161,17 @@ uint32_t Circuit::Function::composeMask(bool a) {
 }
 
 Circuit::Value Circuit::Function::operator()(Circuit::Value a) const {
+    assert(_argumentsCount == 1);
     return a == Circuit::Value::Unknown ? Circuit::Value::Unknown : Circuit::Value((*this)(composeMask(a)));
 }
 
 bool Circuit::Function::operator()(bool a, bool b) const {
+    assert(_argumentsCount == 2);
     return (*this)(composeMask(a, b));
 }
 
 bool Circuit::Function::operator()(bool a) const {
+    assert(_argumentsCount == 1);
     return (*this)(composeMask(a));
 }
 

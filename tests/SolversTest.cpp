@@ -1,9 +1,11 @@
 #include "catch2/catch_test_macros.hpp"
 
 #include <random>
+#include <iostream>
 
 #include "BruteForceSolver.h"
 #include "CNFReductionSolver.h"
+#include "OptimizedEnumerationSolver.h"
 #include "Circuit.h"
 
 using namespace std;
@@ -36,7 +38,7 @@ namespace {
 
 class SolversTester {
 public:
-    static void testCircuit_AND(const CircuitSATSolver &solver) {
+    static void test_AND(const CircuitSATSolver &solver) {
         Circuit circuit;
         circuit.addInput("0");
         circuit.addInput("1");
@@ -48,7 +50,7 @@ public:
         REQUIRE(circuit.output(0).value == Circuit::Value::True);
     }
 
-    static void testCircuit_SimpleSAT(const CircuitSATSolver &solver) {
+    static void test_SimpleSAT(const CircuitSATSolver &solver) {
         Circuit circuit;
         circuit.addInput("i0");
         circuit.addInput("i1");
@@ -73,59 +75,77 @@ public:
         REQUIRE(circuit.output(0).value == Circuit::Value::True);
     }
 
-    static void testCircuit_SimpleUnSAT(const CircuitSATSolver &solver) {
+    static void test_SimpleUnSAT(const CircuitSATSolver &solver) {
         Circuit circuit;
         circuit.addInput("i0");
         circuit.addInput("i1");
         circuit.addInternal("2", {"i0", "i1"}, Circuit::Functions::XOR);
         circuit.addInternal("3", {"i0", "i1"}, Circuit::Functions::NXOR);
-        circuit.addInternal("o3", {"2", "3"}, Circuit::Functions::AND);
-        circuit.addOutput("o3");
+        circuit.addInternal("o4", {"2", "3"}, Circuit::Functions::AND);
+        circuit.addOutput("o4");
         REQUIRE(solver.solve(circuit) == CircuitSATSolver::Result::UnSAT);
     }
 };
 
 TEST_CASE("BruitForceSolverTest-AND", "[AND]") {
-    SolversTester::testCircuit_AND(BruteForceSolver());
+    SolversTester::test_AND(BruteForceSolver());
 }
 
 TEST_CASE("BruitForceSolverTest-SimpleSAT", "[SimpleSAT]") {
-    SolversTester::testCircuit_SimpleSAT(BruteForceSolver());
+    SolversTester::test_SimpleSAT(BruteForceSolver());
 }
 
 TEST_CASE("BruitForceSolverTest-SimpleUnSAT", "[SimpleUnSAT]") {
-    SolversTester::testCircuit_SimpleUnSAT(BruteForceSolver());
+    SolversTester::test_SimpleUnSAT(BruteForceSolver());
 }
 
 TEST_CASE("CNFReductionSolverTest-AND", "[AND]") {
-    SolversTester::testCircuit_AND(CNFReductionSolver());
+    SolversTester::test_AND(CNFReductionSolver());
 }
 
 TEST_CASE("CNFReductionSolverTest-SimpleSAT", "[SimpleSAT]") {
-    SolversTester::testCircuit_SimpleSAT(CNFReductionSolver());
+    SolversTester::test_SimpleSAT(CNFReductionSolver());
 }
 
 TEST_CASE("CNFReductionSolverTest-SimpleUnSAT", "[SimpleUnSAT]") {
-    SolversTester::testCircuit_SimpleUnSAT(CNFReductionSolver());
+    SolversTester::test_SimpleUnSAT(CNFReductionSolver());
 }
 
-TEST_CASE("StressTestAllSolvers", "[stress]") {
+TEST_CASE("OptimizedEnumerationSolverTest-AND", "[AND]") {
+    SolversTester::test_AND(OptimizedEnumerationSolver());
+}
+
+TEST_CASE("OptimizedEnumerationSolverTest-SimpleSAT", "[SimpleSAT]") {
+    SolversTester::test_SimpleSAT(OptimizedEnumerationSolver());
+}
+
+TEST_CASE("OptimizedEnumerationSolverTest-SimpleUnSAT", "[SimpleUnSAT]") {
+    SolversTester::test_SimpleUnSAT(OptimizedEnumerationSolver());
+}
+
+TEST_CASE("_StressTestAllSolvers", "[stress]") {
     const static vector<shared_ptr<CircuitSATSolver>> solvers = {make_shared<BruteForceSolver>(),
-                                                                 make_shared<CNFReductionSolver>()};
+                                                                 make_shared<CNFReductionSolver>(),
+                                                                 make_shared<OptimizedEnumerationSolver>()};
     bool wasUnSAT = false, wasSAT = false;
-    mt19937 rnd(0);
 
     for (int i = 0; i < 500; i++) {
-        Circuit circuit = generateCircuit(rnd, 10, 100);
+        mt19937 rnd(i);
+        Circuit circuit = generateCircuit(rnd, 15, 100);
         CircuitSATSolver::Result result = CircuitSATSolver::Result::Unknown;
-        for (auto &solver: solvers) {
+        for (size_t solverId = 0; solverId < solvers.size(); solverId++) {
+            auto &solver = solvers[solverId];
             Circuit circuitCopy = circuit;
             auto currentResult = solver->solve(circuitCopy);
             REQUIRE(currentResult != CircuitSATSolver::Result::Unknown);
             if (result == CircuitSATSolver::Result::Unknown)
                 result = currentResult;
-            else
+            else if (currentResult != result) {
+                cerr << "Failed test generated with seed " << i << endl
+                     << "Solver #" << solverId << " printed " << int(currentResult)
+                     << " while " << int(result) << " was expected";
                 REQUIRE(currentResult == result);
+            }
         }
         wasSAT |= result == CircuitSATSolver::Result::SAT;
         wasUnSAT |= result == CircuitSATSolver::Result::UnSAT;

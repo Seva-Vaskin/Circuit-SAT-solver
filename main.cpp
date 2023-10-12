@@ -7,12 +7,14 @@
 #include "BenchParser.h"
 #include "BruteForceSolver.h"
 #include "CNFReductionSolver.h"
+#include "OptimizedEnumerationSolver.h"
 
 using namespace std;
 
 static const map<string, shared_ptr<CircuitSATSolver>> stringToSolver = {
-        {"BruteForceSolver",   make_shared<BruteForceSolver>()},
-        {"CNFReductionSolver", make_shared<CNFReductionSolver>()}
+        {"BruteForceSolver",           make_shared<BruteForceSolver>()},
+        {"CNFReductionSolver",         make_shared<CNFReductionSolver>()},
+        {"OptimizedEnumerationSolver", make_shared<OptimizedEnumerationSolver>()}
 };
 
 int main(int argc, char *argv[]) {
