@@ -1,6 +1,6 @@
 #!/bin/bash
-set -e
-set -o pipefail
+#set -e
+#set -o pipefail
 
 if [ "$#" -ne 2 ]; then
   echo "Usage: benchmarks.sh solver_name time_limit"

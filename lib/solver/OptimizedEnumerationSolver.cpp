@@ -121,27 +121,32 @@ namespace {
         return int(i);
     }
 
-    int canNodeHasValue(size_t i, Circuit::Value value, NodesVector &nodes, ImplicationsVector &implications,
-                        Circuit &circuit, const vector<size_t> &posInNodes, vector<int> &valueSources,
-                        const vector<vector<size_t>> &parents) {
+    pair<int, bool>
+    canNodeHasValue(size_t i, Circuit::Value value, NodesVector &nodes, ImplicationsVector &implications,
+                    Circuit &circuit, const vector<size_t> &posInNodes, vector<int> &valueSources,
+                    const vector<vector<size_t>> &parents) {
         if (i == nodes.size())
-            return (int) nodes.size();
+            return {(int) nodes.size(), false};
         int conflictPos = setValue(i, value, int(i), nodes, implications, circuit, posInNodes, valueSources, parents);
         if (conflictPos != (int) i)
-            return conflictPos;
+            return {conflictPos, false};
 
-        int prefFalse = canNodeHasValue(i + 1, Circuit::Value::False, nodes, implications, circuit, posInNodes,
-                                        valueSources, parents);
+        auto [prefFalse, shouldUndoFalse] = canNodeHasValue(i + 1, Circuit::Value::False, nodes, implications, circuit,
+                                                            posInNodes, valueSources, parents);
         if (prefFalse == (int) nodes.size())
-            return prefFalse;
+            return {prefFalse, false};
+        if (shouldUndoFalse && prefFalse < int(i))
+            return {prefFalse, true};
 
-        int prefTrue = canNodeHasValue(i + 1, Circuit::Value::True, nodes, implications, circuit, posInNodes,
-                                       valueSources, parents);
+        auto [prefTrue, shouldUndoTrue] = canNodeHasValue(i + 1, Circuit::Value::True, nodes, implications, circuit,
+                                                          posInNodes, valueSources, parents);
         if (prefTrue == (int) nodes.size())
-            return prefTrue;
+            return {prefTrue, false};
+        if (shouldUndoTrue && prefTrue < int(i))
+            return {prefTrue, true};
 
         unsetValue(i, nodes, implications, valueSources);
-        return min(max(prefFalse, prefTrue), int(i) - 1);
+        return {int(i) - 1, false};
     }
 }
 
@@ -176,8 +181,8 @@ CircuitSATSolver::Result OptimizedEnumerationSolver::solve(Circuit &circuit) con
     buildImplications(nodes, implications, posInNodes);
     vector<int> valueSources(nodes.size(), -1);
 
-    int result = canNodeHasValue(0, Circuit::Value::True, nodes, implications, circuit, posInNodes, valueSources,
-                                 parents);
+    auto [result, _] = canNodeHasValue(0, Circuit::Value::True, nodes, implications, circuit, posInNodes, valueSources,
+                                       parents);
     assert(result == -1 || result == (int) nodes.size());
     return result == -1 ? CircuitSATSolver::Result::UnSAT : CircuitSATSolver::Result::SAT;
 }
